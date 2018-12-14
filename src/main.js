@@ -5,6 +5,8 @@ import App from './App'
 import vueRouter from 'vue-router'
 import VueRouter from 'vue-router';
 
+import '@/common/css/icon.css'
+
 Vue.config.productionTip = false
 import Goods from './components/goods/Goods'
 
