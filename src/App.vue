@@ -29,7 +29,7 @@ export default {
     .then(response => {
       if(response.code ==0){
         this.poiInfo = response.data.poi_info
-        console.log(this.poiInfo)
+        //console.log(this.poiInfo)
       }
     })
 
@@ -38,7 +38,7 @@ export default {
     .then(response => {
       if(response.code ==0){
         this.commentNum = response.data.comment_num
-        console.log(response)
+        //console.log(response)
       }
     })
   }
