@@ -20,6 +20,9 @@
             <img class="icon" :src="item.icon" v-if="item.icon" alt="">
             {{item.name}}
           </p>
+          <i class="num" v-show="calculateCount(item.spus)">
+            {{calculateCount(item.spus)}}
+          </i>
         </li>
       </ul>
     </div>
@@ -57,15 +60,22 @@
                    <span class="unit">/{{food.unit}}</span>
                  </p>
                </div>
+               <div class="cartcontrol-wrapper">
+                 <app-cart-control :food="food"></app-cart-control>
+               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
+    <!-- 购物车 -->
+   <app-shopcart :poiInfo="poiInfo" :selectFoods="selectFoods"></app-shopcart>
   </div>
 </template>
 <script>
 import BScroll from "better-scroll";
+import CartControl from "../cartcontrol/CartControl";
+import ShopCart from "../shopcart/Shopcart";
 export default {
   data() {
     return {
@@ -75,6 +85,10 @@ export default {
       listHeight: [],
       scrollY: 0
     };
+  },
+  components: {
+    "app-cart-control": CartControl,
+    "app-shopcart": ShopCart
   },
   created() {
     fetch("/api/goods")
@@ -106,10 +120,10 @@ export default {
         click: true
       });
       /* 获取具体商品的滑动的高度 */
-      this.foodScroll.on('scroll',(pos) =>{
-       /* console.log(pos) */
-        this.scrollY = Math.abs(pos.y)
-      })
+      this.foodScroll.on("scroll", pos => {
+        /* console.log(pos) */
+        this.scrollY = Math.abs(pos.y);
+      });
     },
     selectMenu(index) {
       let foodlist = this.$refs.foodScroll.getElementsByClassName(
@@ -119,32 +133,52 @@ export default {
       let element = foodlist[index];
       this.foodScroll.scrollToElement(element, 250);
     },
-    calculateHeight(){
+    calculateCount(spus){
+     let count =0;
+     spus.forEach((food) =>{
+       if(food.count >0){
+         count +=food.count
+       }
+     })
+    },
+    calculateHeight() {
       let foodlist = this.$refs.foodScroll.getElementsByClassName(
         "food-list-hook"
       );
-      let height=0;
-      this.listHeight.push(height)
-      for(let i=0;i<foodlist.length;i++){
-
-        let item = foodlist[i]
+      let height = 0;
+      this.listHeight.push(height);
+      for (let i = 0; i < foodlist.length; i++) {
+        let item = foodlist[i];
         //累加
-        height +=item.clientHeight
-        this.listHeight.push(height)
+        height += item.clientHeight;
+        this.listHeight.push(height);
       }
-     // console.log(this.listHeight)
+      // console.log(this.listHeight)
     }
   },
   computed: {
-    currentIndex(){
-      for(let i=0;i<this.listHeight.length;i++){
+    currentIndex() {
+      for (let i = 0; i < this.listHeight.length; i++) {
         let height1 = this.listHeight[i];
-        let height2 = this.listHeight[i+1]
-        if(!height2 || this.scrollY>=height1 &&this.scrollY<height2){
-          return i
+        let height2 = this.listHeight[i + 1];
+        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+          return i;
         }
       }
-      return 0
+      return 0;
+    },
+    selectFoods() {
+      let foods = [];
+      this.goods.forEach(item => {
+        item.spus.forEach(food => {
+          if (food.count > 0) {
+            foods.push(food);
+          }
+        });
+      });
+       console.log(foods)
+      return foods;
+     
     }
   }
 };
@@ -167,6 +201,7 @@ export default {
   list-style: none;
   padding: 16px 23px 15px 10px;
   border-bottom: 1px solid #e4e4e4;
+  position:relative;
 }
 .goods .menu-wrapper .menu-item .text {
   font-size: 13px;
@@ -283,6 +318,7 @@ export default {
 
 .goods .menu-wrapper .menu-item .num {
   position: absolute;
+  display: block;
   right: 5px;
   top: 5px;
   width: 13px;
