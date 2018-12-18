@@ -45,7 +45,11 @@
           <h3 class="title">{{item.name}}</h3>
           <!-- 具体的商品列表 -->
           <ul>
-            <li v-for="(food,index) in item.spus" :key="index" class="food-item">
+            <li 
+               v-for="(food,index) in item.spus" 
+               :key="index" class="food-item"
+               @click="showDetail(food)"
+              >
                <div class="icon" :style=" head_bg(food.picture)"></div>
                <div class="content">
                  <h3 class="name">{{food.name}}</h3>
@@ -70,12 +74,15 @@
     </div>
     <!-- 购物车 -->
    <app-shopcart :poiInfo="poiInfo" :selectFoods="selectFoods"></app-shopcart>
+   <!-- 商品详情 -->
+  <app-produce-detail :food="selectFood" ref="foodView"></app-produce-detail>
   </div>
 </template>
 <script>
 import BScroll from "better-scroll";
 import CartControl from "../cartcontrol/CartControl";
 import ShopCart from "../shopcart/Shopcart";
+import produceDetail from "../productDetail/produceDetail";
 export default {
   data() {
     return {
@@ -83,12 +90,14 @@ export default {
       goods: [],
       poiInfo: {},
       listHeight: [],
+      selectFood: {},
       scrollY: 0
     };
   },
   components: {
     "app-cart-control": CartControl,
-    "app-shopcart": ShopCart
+    "app-shopcart": ShopCart,
+    "app-produce-detail": produceDetail
   },
   created() {
     fetch("/api/goods")
@@ -133,13 +142,13 @@ export default {
       let element = foodlist[index];
       this.foodScroll.scrollToElement(element, 250);
     },
-    calculateCount(spus){
-     let count =0;
-     spus.forEach((food) =>{
-       if(food.count >0){
-         count +=food.count
-       }
-     })
+    calculateCount(spus) {
+      let count = 0;
+      spus.forEach(food => {
+        if (food.count > 0) {
+          count += food.count;
+        }
+      });
     },
     calculateHeight() {
       let foodlist = this.$refs.foodScroll.getElementsByClassName(
@@ -154,6 +163,10 @@ export default {
         this.listHeight.push(height);
       }
       // console.log(this.listHeight)
+    },
+    showDetail(food) {
+      this.selectFood = food;
+      this.$refs.foodView.showView()
     }
   },
   computed: {
@@ -176,9 +189,8 @@ export default {
           }
         });
       });
-       console.log(foods)
+      console.log(foods);
       return foods;
-     
     }
   }
 };
@@ -201,7 +213,7 @@ export default {
   list-style: none;
   padding: 16px 23px 15px 10px;
   border-bottom: 1px solid #e4e4e4;
-  position:relative;
+  position: relative;
 }
 .goods .menu-wrapper .menu-item .text {
   font-size: 13px;
