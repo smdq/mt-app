@@ -104,7 +104,7 @@ export default {
       .then(res => res.json())
       .then(response => {
         if (response.code == 0) {
-          console.log(response);
+          //console.log(response);
           this.container = response.data.container_operation_source;
           this.goods = response.data.food_spu_tags;
           this.poiInfo = response.data.poi_info;
@@ -189,7 +189,7 @@ export default {
           }
         });
       });
-      console.log(foods);
+     // console.log(foods);
       return foods;
     }
   }
