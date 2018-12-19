@@ -121,7 +121,7 @@ const COMMENT = 0
       .then(response =>{
         if(response.code ==0){
           this.ratings = response.data
-          console.log(this.ratings)
+          //console.log(this.ratings)
           this.$nextTick(()=>{
             if(!this.scroll){
               this.scroll = new BScroll(this.$refs.rateView,{

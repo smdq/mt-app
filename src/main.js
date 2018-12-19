@@ -10,13 +10,15 @@ import '@/common/css/icon.css'
 Vue.config.productionTip = false
 import Goods from './components/goods/Goods'
 import Ratings from './components/ratings/Ratings'
+import Seller from './components/seller/Seller'
 
 Vue.use(vueRouter)
 
 const routes = [
   {path:'/',redirect:'/goods'},
   {path:'/goods',component:Goods},
-  {path:'/ratings',component:Ratings}
+  {path:'/ratings',component:Ratings},
+  {path:'/seller',component:Seller}
 ]
 /* eslint-disable no-new */
 const router = new VueRouter({
